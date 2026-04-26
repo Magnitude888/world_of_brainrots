@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>World of Brainrots — FINAL ULTIMATE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ВСЕ СТИЛИ ОСТАЛИСЬ БЕЗ ИЗМЕНЕНИЙ (КОПИРУЙТЕ ИЗ ВАШЕГО ПОСЛЕДНЕГО ВАРИАНТА) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { min-height: 100vh; background: radial-gradient(circle at 20% 30%, #0f081a, #020006); font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-container { max-width: 500px; width: 100%; background: rgba(20,14,30,0.8); backdrop-filter: blur(20px); border-radius: 56px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; text-align: center; box-shadow: 0 25px 45px rgba(0,0,0,0.5); }
+        .auth-title { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #fff5e6, #d7bbff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 30px; }
+        .auth-input { width: 100%; padding: 14px 20px; margin: 12px 0; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 60px; color: white; font-size: 16px; outline: none; }
+        .auth-input:focus { border-color: #a855f7; box-shadow: 0 0 10px rgba(168,85,247,0.5); }
+        .auth-btn { background: linear-gradient(115deg, #7c3aed, #db2777); border: none; padding: 12px 30px; font-size: 18px; font-weight: bold; border-radius: 60px; color: white; cursor: pointer; width: 100%; margin-top: 20px; }
+        .auth-switch { margin-top: 20px; color: #b9aad6; cursor: pointer; font-size: 14px; }
+        .error-msg { color: #ff8a8a; font-size: 14px; margin-top: 5px; text-align: left; }
+        .app { max-width: 1500px; width: 100%; background: rgba(20,14,30,0.55); backdrop-filter: blur(22px); border-radius: 56px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 45px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; height: 90vh; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 15px; }
+        .coin-display { background: rgba(0,0,0,0.6); border-radius: 60px; padding: 8px 28px; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.6rem; color: #ffd966; }
+        .yellow-coin { color: #ffcc44; }
+        .user-info { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.5); padding: 6px 20px; border-radius: 40px; cursor: pointer; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #2a1e3a; object-fit: cover; border: 1px solid #a855f7; pointer-events: none; }
+        .username-display { color: white; font-size: 1.1rem; font-weight: 600; margin-right: 8px; }
+        .verified-badge { color: #3b82f6; margin-left: 6px; font-size: 1rem; }
+        .settings-icon { background: none; border: none; color: #d1c5e6; font-size: 1.4rem; cursor: pointer; padding: 0 8px; transition: 0.2s; }
+        .settings-icon:hover { color: #a855f7; transform: rotate(15deg); }
+        .tab-bar { display: flex; gap: 10px; padding: 20px 32px 0 32px; flex-wrap: wrap; }
+        .tab-btn { background: rgba(25,18,32,0.7); border: none; padding: 12px 28px; font-size: 15px; font-weight: 700; color: #d1c5e6; border-radius: 44px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .tab-btn.active { background: linear-gradient(125deg, #a855f7, #ec4899); color: white; box-shadow: 0 8px 20px rgba(168,85,247,0.4); }
+        .content { flex: 1; padding: 28px 32px; overflow-y: auto; mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); }
+        .tab-pane { display: none; animation: fade 0.25s; }
+        .tab-pane.active { display: block; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-size: 24px; font-weight: 800; color: #f0e9ff; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        .summon-center { display: flex; flex-direction: column; align-items: center; }
+        .game-title { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #fff5e6, #d7bbff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 20px; }
+        .summon-btn { background: linear-gradient(115deg, #7c3aed, #db2777); border: none; padding: 18px 52px; font-size: 26px; font-weight: 800; border-radius: 80px; color: white; cursor: pointer; box-shadow: 0 15px 30px rgba(124,58,237,0.5); margin: 20px 0 25px; transition: transform 0.1s; }
+        .summon-btn:active { transform: scale(0.96); }
+        .cooldown-indicator { font-size: 1rem; margin-bottom: 20px; color: #ffcc88; font-weight: 600; }
+        .auto-delete-panel { background: rgba(0,0,0,0.5); border-radius: 60px; padding: 15px 25px; margin-bottom: 20px; text-align: center; }
+        .auto-delete-panel p { color: #ddd; font-size: 0.9rem; margin-bottom: 12px; font-weight: 600; }
+        .rarity-checkboxes { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .rarity-check { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 40px; padding: 6px 12px; font-size: 0.8rem; font-weight: bold; color: #ccc; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; user-select: none; }
+        .rarity-check input { margin: 0; accent-color: #a855f7; transform: scale(1.1); margin-right: 4px; }
+        .last-card { width: 230px; margin: 0 auto; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 230px)); gap: 28px; justify-content: center; margin-top: 20px; }
+        .brain-card, .hotbar-slot { aspect-ratio: 1/1; background: rgba(35,26,48,0.92); backdrop-filter: blur(8px); border-radius: 32px; padding: 16px 12px; text-align: center; position: relative; border: 2px solid; display: flex; flex-direction: column; justify-content: center; transition: 0.25s; cursor: default; }
+        .hotbar-slot.empty-slot { filter: blur(2px); background: rgba(0,0,0,0.7); border-color: #2a1e3a; justify-content: center; align-items: center; color: #888; font-weight: bold; gap: 8px; }
+        .hotbar-slot.empty-slot i { display: none; }
+        .brain-card.shiny { border-color: #ff00ff !important; box-shadow: 0 0 12px #ff00ff, 0 0 20px #ff99ff; animation: none; }
+        .brain-card:hover { transform: translateY(-6px); box-shadow: 0 20px 30px -10px black; }
+        .delete-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border-radius: 30px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; color: #ff8a8a; cursor: pointer; border: none; font-size: 12px; }
+        .brain-card:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: #ff4444; color: white; }
+        .equip-btn, .unequip-btn, .buy-btn {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(115deg, #00b4db, #0083b0); border: none; border-radius: 40px; padding: 8px 16px;
+            font-size: 13px; font-weight: 800; font-family: 'Quicksand', sans-serif; letter-spacing: 0.5px;
+            color: white; cursor: pointer; width: auto; min-width: 100px; white-space: nowrap; z-index: 2;
+            transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3); backdrop-filter: blur(2px);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .equip-btn { background: linear-gradient(115deg, #2ecc71, #27ae60); }
+        .unequip-btn { background: linear-gradient(115deg, #e67e22, #d35400); }
+        .buy-btn { background: linear-gradient(115deg, #a855f7, #ec4899); }
+        .equip-btn:hover, .unequip-btn:hover, .buy-btn:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+        .card-icon { font-size: 54px; margin-bottom: 12px; }
+        .card-icon img { width: 54px; height: 54px; object-fit: contain; }
+        .card-name { font-size: 16px; font-weight: 700; color: #f5f0ff; margin-bottom: 6px; }
+        .card-rarity { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: inline-block; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 4px; }
+        .serial-number { font-size: 10px; font-weight: 500; color: #ffaa88; margin-top: -2px; }
+        .exist-count { font-size: 11px; font-weight: 600; color: #ccc; margin-top: 2px; }
+        .seller-info { font-size: 10px; font-weight: 600; color: white; margin: 6px 0 40px 0; }
+        .income-preview { display: none; }
+        .market-subtabs { display: flex; gap: 15px; margin-bottom: 20px; }
+        .market-subtab { background: rgba(25,18,32,0.8); border: none; padding: 10px 24px; font-size: 16px; font-weight: 700; color: #d1c5e6; border-radius: 44px; cursor: pointer; transition: 0.2s; }
+        .market-subtab.active { background: linear-gradient(125deg, #a855f7, #ec4899); color: white; box-shadow: 0 4px 12px rgba(168,85,247,0.3); }
+        .market-search { background: rgba(0,0,0,0.6); border-radius: 40px; padding: 8px 20px; border: 1px solid rgba(255,255,255,0.2); color: white; font-family: inherit; width: 250px; outline: none; margin-bottom: 20px; }
+        .add-offer-card { background: rgba(40,30,55,0.6); border: 2px dashed #888; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; cursor: pointer; }
+        .add-offer-card i { font-size: 48px; color: #aaa; }
+        .add-offer-card span { color: #ccc; font-weight: bold; }
+        .add-offer-card:hover { border-color: #a855f7; background: rgba(168,85,247,0.2); transform: scale(1.02); }
+        @keyframes legendaryGlow { 0% { filter: drop-shadow(0 0 2px #f5b559); } 100% { filter: drop-shadow(0 0 12px #f5b559); } }
+        @keyframes exoticGlow { 0% { filter: drop-shadow(0 0 2px #ff6ad5); } 100% { filter: drop-shadow(0 0 12px #ff6ad5); } }
+        @keyframes apexPulse { 0% { border-color: #c084fc; box-shadow: 0 0 5px #c084fc, 0 0 10px #a855f7; filter: brightness(1); } 50% { border-color: #e879f9; box-shadow: 0 0 15px #e879f9, 0 0 25px #d946ef; filter: brightness(1.1); } 100% { border-color: #c084fc; box-shadow: 0 0 5px #c084fc, 0 0 10px #a855f7; filter: brightness(1); } }
+        .brain-card[data-rarity="Legendary"] { animation: legendaryGlow 1.2s infinite alternate; }
+        .brain-card[data-rarity="Exotic"] { animation: exoticGlow 1.5s infinite alternate; }
+        .brain-card[data-rarity="Apex"] { animation: apexPulse 1.8s infinite ease; background: rgba(0,0,0,0.7); }
+        .brain-card[data-rarity="Sacred"] { animation: sacredPulse 1.6s infinite ease; background: rgba(0,0,0,0.85); border-color: cyan; }
+        @keyframes sacredPulse { 0% { border-color: cyan; } 50% { border-color: magenta; } 100% { border-color: cyan; } }
+        .brain-card.locked { filter: blur(6px); background: rgba(20,15,30,0.9); border-color: #555 !important; cursor: default; }
+        .glass-table { background: rgba(0,0,0,0.5); border-radius: 48px; padding: 24px; max-width: 600px; margin: 0 auto; }
+        .table-row { display: flex; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 18px; font-weight: 600; color: white; }
+        .empty-message { text-align: center; padding: 50px; color: #c0b0e0; }
+        .global-stats-list { display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 20px auto; }
+        .global-item { background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(20,15,30,0.8)); border-radius: 40px; padding: 12px 20px; display: flex; align-items: center; gap: 18px; border: 1px solid rgba(255,255,255,0.15); transition: 0.2s; }
+        .global-item:hover { transform: translateX(5px); background: rgba(0,0,0,0.7); }
+        .global-rank { color: #ffcc44; font-weight: 800; min-width: 50px; font-size: 1.3rem; }
+        .global-avatar { width: 48px; height: 48px; border-radius: 50%; background: #2a1e3a; object-fit: cover; border: 1px solid #a855f7; }
+        .global-info { flex: 1; }
+        .global-displayname { color: #f0e9ff; font-weight: 800; font-size: 1.1rem; }
+        .global-username { color: #bbb; font-size: 0.8rem; margin-top: 2px; }
+        .global-value { color: #ffaa66; font-family: monospace; font-weight: 800; font-size: 1.2rem; }
+        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-radius: 60px; padding: 12px 28px; color: white; font-weight: 600; z-index: 2000; animation: fadeOutUp 3s forwards; pointer-events: none; border: 1px solid rgba(255,255,255,0.2); }
+        @keyframes fadeOutUp { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 70% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-30px); visibility: hidden; } }
+        .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: rgba(30,22,44,0.95); border-radius: 56px; padding: 30px; width: 450px; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .modal-card h3 { color: white; margin-bottom: 20px; font-size: 28px; }
+        .modal-card p { color: white; margin: 12px 0; }
+        .modal-card strong { color: #ffcc44; }
+        .modal-card select, .modal-card input { width: 100%; padding: 14px 20px; margin: 12px 0; background: #2a1e3a; border: 1px solid #a855f7; border-radius: 60px; color: white; font-family: inherit; font-size: 16px; outline: none; }
+        .modal-card button { background: linear-gradient(135deg, #4a1d8c, #8b3de0); border: none; padding: 12px 24px; border-radius: 60px; color: white; font-weight: bold; cursor: pointer; margin: 10px 5px; transition: 0.1s; }
+        .modal-card button:active { transform: scale(0.96); }
+        .modal-card .flex-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
+        .upgrade-grid, .shop-grid { display: flex; flex-direction: column; gap: 28px; max-width: 800px; margin: 0 auto; }
+        .upgrade-card, .shop-card { background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); border-radius: 48px; padding: 26px 30px; border: 1px solid rgba(255,255,255,0.1); transition: 0.25s; }
+        .upgrade-card:hover, .shop-card:hover { border-color: rgba(168,85,247,0.5); transform: translateY(-2px); }
+        .upgrade-title, .shop-title { font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 14px; color: #f0e9ff; margin-bottom: 18px; }
+        .upgrade-stats, .shop-stats { display: flex; justify-content: space-between; margin: 12px 0; font-weight: 600; color: white; flex-wrap: wrap; gap: 10px; }
+        .progress-bar-bg { background: rgba(0,0,0,0.5); border-radius: 30px; height: 12px; margin: 12px 0; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 30px; transition: width 0.3s; height: 100%; }
+        .upgrade-btn, .shop-btn { background: linear-gradient(115deg, #6c5ce7, #a855f7); border: none; padding: 14px 0; border-radius: 60px; font-weight: 800; font-size: 1.2rem; font-family: 'Quicksand', sans-serif; color: white; cursor: pointer; width: 100%; margin-top: 12px; box-shadow: 0 6px 14px rgba(0,0,0,0.4); transition: 0.2s; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .upgrade-btn:hover, .shop-btn:hover { transform: scale(1.02); background: linear-gradient(115deg, #7c3aed, #b85cf9); box-shadow: 0 8px 18px rgba(0,0,0,0.5); }
+        .shop-timer { text-align: center; margin-bottom: 20px; color: #ffcc88; font-weight: 700; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1e1628; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <div id="authContainer" class="auth-container">
+        <div class="auth-title">World of Brainrots</div>
+        <div id="loginForm">
+            <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="off">
+            <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+            <div id="loginError" class="error-msg"></div>
+            <button class="auth-btn" id="loginBtn">Login</button>
+            <div class="auth-switch">Don't have an account? <span id="showRegister">Register</span></div>
+        </div>
+        <div id="registerForm" style="display:none;">
+            <input type="text" id="regUsername" class="auth-input" placeholder="Username (3-20, a-z0-9_)">
+            <input type="password" id="regPassword" class="auth-input" placeholder="Password">
+            <input type="password" id="regConfirm" class="auth-input" placeholder="Confirm Password">
+            <div id="regError" class="error-msg"></div>
+            <button class="auth-btn" id="registerBtn">Register</button>
+            <div class="auth-switch">Already have an account? <span id="showLogin">Login</span></div>
+        </div>
+    </div>
+    <div id="appContainer" class="app" style="display:none;">
+        <div class="top-bar">
+            <div class="coin-display"><i class="fas fa-brain yellow-coin"></i> <span id="brainCoins">0</span></div>
+            <div class="user-info" id="avatarClickArea">
+                <img id="avatarImg" class="user-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%238b5cf6'/%3E%3Ctext x='50' y='67' text-anchor='middle' fill='white' font-size='40' dy='.3em'%3E😺%3C/text%3E%3C/svg%3E">
+                <span id="currentUsername" class="username-display"></span>
+                <span id="verifiedBadge" class="verified-badge" style="display: none;"><i class="fas fa-check-circle"></i></span>
+                <button id="settingsBtn" class="settings-icon"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
+        <div class="tab-bar" id="tabBar">
+            <button class="tab-btn active" data-tab="summon"><i class="fas fa-meteor"></i> Summon</button>
+            <button class="tab-btn" data-tab="inventory"><i class="fas fa-chess-board"></i> Inventory</button>
+            <button class="tab-btn" data-tab="hotbar"><i class="fas fa-bolt"></i> Hotbar</button>
+            <button class="tab-btn" data-tab="index"><i class="fas fa-scroll"></i> Index</button>
+            <button class="tab-btn" data-tab="upgrade"><i class="fas fa-arrow-up"></i> Upgrades</button>
+            <button class="tab-btn" data-tab="shop"><i class="fas fa-store"></i> Merchant</button>
+            <button class="tab-btn" data-tab="market"><i class="fas fa-chart-line"></i> Market</button>
+            <button class="tab-btn" data-tab="global"><i class="fas fa-trophy"></i> Leaderboard</button>
+            <button class="tab-btn" data-tab="chances"><i class="fas fa-chart-line"></i> Chances</button>
+        </div>
+        <div class="content">
+            <div class="tab-pane active" id="summonPane">
+                <div class="summon-center">
+                    <div class="game-title"><i class="fas fa-brain yellow-coin"></i> World of Brainrots</div>
+                    <div class="auto-delete-panel"><p><i class="fas fa-trash-alt"></i> Auto-delete rarities (multiselect):</p><div id="rarityCheckboxes" class="rarity-checkboxes"></div></div>
+                    <button class="summon-btn" id="summonBtn"><i class="fas fa-hand-sparkles"></i> SUMMON</button>
+                    <div class="cooldown-indicator" id="cdIndicator"></div>
+                    <div id="lastCardContainer" class="last-card"></div>
+                </div>
+            </div>
+            <div class="tab-pane" id="inventoryPane"><div class="section-title"><i class="fas fa-cubes"></i> Your brainrots</div><div id="inventoryGrid" class="cards-grid"></div></div>
+            <div class="tab-pane" id="hotbarPane"><div class="section-title"><i class="fas fa-bolt"></i> Hotbar slots</div><div id="hotbarSlotsContainer" class="cards-grid"></div></div>
+            <div class="tab-pane" id="indexPane"><div class="section-title"><i class="fas fa-atlas"></i> Full collection</div><div id="collectionRoot"></div></div>
+            <div class="tab-pane" id="upgradePane"><div class="section-title"><i class="fas fa-rocket"></i> Upgrades</div><div class="upgrade-grid" id="upgradeGrid"></div></div>
+            <div class="tab-pane" id="shopPane"><div class="section-title"><i class="fas fa-store"></i> Merchant — Limited offers</div><div id="shopTimer" class="shop-timer"></div><div id="shopGrid" class="shop-grid"></div></div>
+            <div class="tab-pane" id="marketPane">
+                <div class="section-title"><i class="fas fa-chart-line"></i> Global Market</div>
+                <div class="market-subtabs">
+                    <button class="market-subtab active" data-market-tab="my">My offers</button>
+                    <button class="market-subtab" data-market-tab="others">Other offers</button>
+                </div>
+                <div id="myOffersPanel">
+                    <div id="myOffersGrid" class="cards-grid"></div>
+                </div>
+                <div id="othersOffersPanel" style="display:none;">
+                    <input type="text" id="marketSearch" class="market-search" placeholder="🔍 Search by name...">
+                    <div id="othersOffersGrid" class="cards-grid"></div>
+                </div>
+            </div>
+            <div class="tab-pane" id="globalPane"><div class="section-title"><i class="fas fa-trophy"></i> Leaderboard</div><div id="leaderboardContainer" class="global-stats-list"></div></div>
+            <div class="tab-pane" id="chancesPane"><div class="glass-table"><div class="table-row" style="border-bottom:2px solid silver;"><span>Rarity</span><span>Chance</span></div><div id="chancesList"></div></div></div>
+        </div>
+    </div>
+    <div id="settingsModal" class="custom-modal">
+        <div class="modal-card">
+            <h3><i class="fas fa-user-cog"></i> Account settings</h3>
+            <p><strong>Username:</strong> <span id="modalUsername" style="color:#ffcc44;"></span></p>
+            <p><strong>Password:</strong> <span id="modalPassword" style="filter: blur(5px); cursor: pointer;" onclick="this.style.filter='none';">••••••</span></p>
+            <div><strong>Display Name:</strong> <input type="text" id="displayNameInput" placeholder="Display name"></div>
+            <div class="flex-buttons"><button id="saveSettingsBtn">Save changes</button><button id="logoutBtn">Log out</button><button id="closeModalBtn">Close</button></div>
+        </div>
+    </div>
+    <div id="sellModal" class="custom-modal">
+        <div class="modal-card">
+            <h3><i class="fas fa-tag"></i> Sell a brainrot</h3>
+            <select id="offerItemSelect"></select><input type="number" id="offerPrice" placeholder="Price in 🧠 (1 - 100,000,000,000)" min="1" max="100000000000">
+            <div class="flex-buttons"><button id="confirmOfferBtn">List for sale</button><button id="cancelOfferBtn">Cancel</button></div>
+        </div>
+    </div>
+    <script>
+        // ========== ДАННЫЕ ==========
+        const RARITIES = [
+            { name: "Common", baseChance: 40.0, color: "#bcbcbc", gradient: "linear-gradient(145deg,#dbdbdb,#a0a0a0)", icon: "fa-shield-alt", baseCoins: 5, rank: 0, value: 5 },
+            { name: "Uncommon", baseChance: 28.0, color: "#6fcf97", gradient: "linear-gradient(145deg,#90e0b0,#2f9e5a)", icon: "fa-leaf", baseCoins: 8, rank: 1, value: 8 },
+            { name: "Epic", baseChance: 15.0, color: "#d16bff", gradient: "linear-gradient(145deg,#e598ff,#aa46f0)", icon: "fa-gem", baseCoins: 15, rank: 2, value: 15 },
+            { name: "Legendary", baseChance: 1.0, color: "#f5b559", gradient: "linear-gradient(145deg,#fcd98a,#f09a2c)", icon: "fa-crown", baseCoins: 25, rank: 3, value: 25 },
+            { name: "Exotic", baseChance: 0.1, color: "#ff6ad5", gradient: "linear-gradient(145deg,#ff99e6,#e63eaa)", icon: "fa-star-of-life", baseCoins: 50, rank: 4, value: 50 },
+            { name: "Secret", baseChance: 0.05, color: "#4bc5cf", gradient: "linear-gradient(145deg,#78e2f0,#1f95a3)", icon: "fa-mask", baseCoins: 200, rank: 5, value: 200 },
+            { name: "Sacred", baseChance: 0.01, color: "#ffffff", gradient: "linear-gradient(145deg,#2a2a2a,#000000)", icon: "fa-eye", baseCoins: 500, rank: 6, value: 500 },
+            { name: "Limited", baseChance: 0.84, color: "#c6ff73", gradient: "linear-gradient(145deg,#dcff9e,#a6dc46)", icon: "fa-hourglass-half", baseCoins: 250, rank: 7, value: 250 },
+            { name: "Apex", baseChance: 0.001, color: "#ff66cc", gradient: "linear-gradient(145deg,#ff99ff,#cc44cc)", icon: "fa-dragon", baseCoins: 1500, rank: 8, value: 1500 }
+        ];
+        const BRAINROTS = [
+            { name: "Noobini Pizzanini", rarity: RARITIES[0], icon: "fa-pizza-slice", customImage: null },
+            { name: "Lirilì Larilà", rarity: RARITIES[0], icon: "fa-music", customImage: null },
+            { name: "Tim Cheese", rarity: RARITIES[0], icon: "fa-cheese", customImage: null },
+            { name: "FluriFlura", rarity: RARITIES[0], icon: "fa-feather-alt", customImage: null },
+            { name: "Tung Tung Sahur", rarity: RARITIES[1], icon: "fa-drumstick-bite", customImage: null },
+            { name: "Gangster Footera", rarity: RARITIES[1], icon: "fa-user-secret", customImage: null },
+            { name: "Boneca Ambalabu", rarity: RARITIES[1], icon: "fa-doll", customImage: null },
+            { name: "Cappuccino Assassino", rarity: RARITIES[2], icon: "fa-mug-hot", customImage: null },
+            { name: "Brr Brr Patapim", rarity: RARITIES[2], icon: "fa-snowflake", customImage: null },
+            { name: "Trulimero Trulicina", rarity: RARITIES[2], icon: "fa-magic", customImage: null },
+            { name: "Ballerina Cappuccina", rarity: RARITIES[3], icon: "fa-shoe-prints", customImage: null },
+            { name: "Chef Crabracadabra", rarity: RARITIES[3], icon: "fa-hat-wizard", customImage: null },
+            { name: "Glorbo Fruttodrillo", rarity: RARITIES[3], icon: "fa-apple-alt", customImage: null },
+            { name: "Bombardiro Crocodilo", rarity: RARITIES[4], icon: "fa-bomb", customImage: null },
+            { name: "Orangutini Ananassini", rarity: RARITIES[4], icon: "fa-pineapple", customImage: null },
+            { name: "Avocadorilla", rarity: RARITIES[4], icon: "fa-seedling", customImage: null },
+            { name: "La Vacca Saturno", rarity: RARITIES[5], icon: "fa-cow", customImage: null },
+            { name: "Bisonte Giuppitere", rarity: RARITIES[5], icon: "fa-bison", customImage: null },
+            { name: "Strawberry Elephant", rarity: RARITIES[6], icon: "fa-strawberry", customImage: null },
+            { name: "Agent 67", rarity: RARITIES[6], icon: "fa-id-card", customImage: null },
+            { name: "Tralalero Tralala", rarity: RARITIES[6], icon: "fa-microphone-alt", customImage: null },
+            { name: "Gattatino Nyanino", rarity: RARITIES[7], icon: "fa-cat", customImage: null },
+            { name: "Espresso Signora", rarity: RARITIES[7], icon: "fa-coffee", customImage: null }, 
+            { name: "Blackhole Goat", rarity: RARITIES[7], icon: "fa-black-hole", customImage: null },
+            { name: "Aurora Core", rarity: RARITIES[8], icon: "fa-sun", customImage: null },
+            { name: "Nebula Brain", rarity: RARITIES[8], icon: "fa-cloud-moon", customImage: null },
+            { name: "Stardust Eater", rarity: RARITIES[8], icon: "fa-star", customImage: null }
+        ];
+
+        let accounts = JSON.parse(localStorage.getItem('brainrot_accounts')) || {};
+        let globalExist = JSON.parse(localStorage.getItem('brainrot_globalExist')) || {};
+        let marketOffers = JSON.parse(localStorage.getItem('brainrot_marketOffers')) || [];
+        let currentUser = null;
+        let gameData = null;
+        let canSummon = true;
+        let cdInterval = null;
+        let cooldownEndTime = 0;
+        let merchantItems = [], merchantResetTime = 0;
+        let hotbarIncomeTimer = null;
+
+        function formatNumberShort(num) { if (num >= 1e9) return (num / 1e9).toFixed(1) + 'b'; if (num >= 1e6) return (num / 1e6).toFixed(1) + 'm'; if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k'; return num.toString(); }
+        function formatNumberComma(num) { if (num === undefined || num === null) return '?'; return num.toLocaleString(); }
+        function showToast(msg, dur = 3000) { let t = document.createElement('div'); t.className = 'toast-notification'; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), dur); }
+        function simpleHash(obj) { return btoa(JSON.stringify(obj) + "BrainrotSalt2025"); }
+        function saveGame() { if (!currentUser) return; let data = JSON.parse(JSON.stringify(gameData)); let hash = simpleHash(data); localStorage.setItem(`brainrot_data_${currentUser}`, JSON.stringify({ data, hash })); }
+        async function loadGameData(username) { let raw = localStorage.getItem(`brainrot_data_${username}`); if (!raw) return null; try { let { data, hash } = JSON.parse(raw); if (simpleHash(data) !== hash) return null; return data; } catch (e) { return null; } }
+        async function createNewUserData() { return { inventory: {}, personalExist: {}, serialCounters: {}, shinyCount: 0, brainCoins: 100, cdLevel: 0, luckLevel: 0, gainLevel: 0, displayName: currentUser, avatar: null, autoDeleteRarities: [], verified: false, equippedSlots: [null, null, null, null, null] }; }
+
+        // ========== ФУНКЦИЯ ОЧИСТКИ НЕВАЛИДНЫХ ПРЕДМЕТОВ ==========
+        function cleanInvalidData(data) {
+            // 1. Очистка инвентаря
+            if (data.inventory) {
+                for (let name in data.inventory) {
+                    const exists = BRAINROTS.some(b => b.name === name);
+                    if (!exists) {
+                        delete data.inventory[name];
+                    }
+                }
+            }
+            // 2. Очистка equippedSlots
+            if (data.equippedSlots && Array.isArray(data.equippedSlots)) {
+                for (let i = 0; i < data.equippedSlots.length; i++) {
+                    const slot = data.equippedSlots[i];
+                    if (slot && !BRAINROTS.some(b => b.name === slot.name)) {
+                        data.equippedSlots[i] = null;
+                    }
+                }
+            }
+            // 3. Очистка personalExist
+            if (data.personalExist) {
+                for (let name in data.personalExist) {
+                    if (!BRAINROTS.some(b => b.name === name)) {
+                        delete data.personalExist[name];
+                    }
+                }
+            }
+        }
+
+        function cleanGlobalMarketOffers() {
+            let changed = false;
+            for (let i = 0; i < marketOffers.length; i++) {
+                const offer = marketOffers[i];
+                if (!BRAINROTS.some(b => b.name === offer.itemName)) {
+                    marketOffers.splice(i, 1);
+                    i--;
+                    changed = true;
+                }
+            }
+            if (changed) saveMarketOffers();
+        }
+
+        function cleanGlobalExist() {
+            let changed = false;
+            for (let name in globalExist) {
+                if (!BRAINROTS.some(b => b.name === name)) {
+                    delete globalExist[name];
+                    changed = true;
+                }
+            }
+            if (changed) localStorage.setItem('brainrot_globalExist', JSON.stringify(globalExist));
+        }
+
+        function getAutoDeleteRarities() { return gameData.autoDeleteRarities || []; }
+        function setAutoDeleteRarities(arr) { gameData.autoDeleteRarities = arr; saveGame(); renderAutoDeleteCheckboxes(); }
+        function getGlobalSerial(item) { return (globalExist[item] || 0) + 1; }
+        function getCooldown() { return Math.max(0.1, 5 - (gameData.cdLevel * (4.9 / 50))); }
+        function getLuckMulti() { return 1 + (gameData.luckLevel * (9 / 50)); }
+        function getGainMulti() { return 1 + (gameData.gainLevel * (5 / 50)); }
+        function getCdCost() { return Math.floor(50 + gameData.cdLevel * gameData.cdLevel * 1.5); }
+        function getLuckCost() { return Math.floor(60 + gameData.luckLevel * gameData.luckLevel * 2); }
+        function getGainCost() { return Math.floor(70 + gameData.gainLevel * gameData.gainLevel * 2); }
+        function getCurrentChances() { let luck = getLuckMulti(); let mod = RARITIES.map(r => ({ ...r, chance: r.baseChance * luck })); let total = mod.reduce((s, r) => s + r.chance, 0); return mod.map(r => ({ ...r, chance: (r.chance / total) * 100 })); }
+        function rollRarity() { let chances = getCurrentChances(); let total = chances.reduce((s, r) => s + r.chance, 0); let rand = Math.random() * total, acc = 0; for (let r of chances) { acc += r.chance; if (rand <= acc) return r; } return chances[0]; }
+        function getRandomItem() { let sel = rollRarity(); let candidates = BRAINROTS.filter(b => b.rarity.name === sel.name); if (!candidates.length) candidates = BRAINROTS.filter(b => b.rarity.name === "Common"); return candidates[Math.floor(Math.random() * candidates.length)]; }
+        function addCoins(amount) { let added = Math.floor(amount * getGainMulti()); gameData.brainCoins += added; if (gameData.brainCoins > 1e7) gameData.brainCoins = 1e7; saveGame(); updateUI(); renderLeaderboard(); }
+        function incrementGlobalExist(item) { 
+            if (!BRAINROTS.some(b => b.name === item)) return; // не добавляем невалидные
+            globalExist[item] = (globalExist[item] || 0) + 1;
+            localStorage.setItem('brainrot_globalExist', JSON.stringify(globalExist));
+        }
+
+        // ========== HOTBAR (без изменений, но с проверкой в renderHotbar) ==========
+        function getEquippedSlots() { return gameData.equippedSlots || (gameData.equippedSlots = [null, null, null, null, null]); }
+        function isNameEquipped(name) { return getEquippedSlots().some(slot => slot && slot.name === name); }
+        function findEmptySlot() { return getEquippedSlots().findIndex(s => s === null); }
+        function equipItem(itemName, instanceIdx) {
+            if (!gameData.inventory[itemName] || !gameData.inventory[itemName][instanceIdx]) { showToast("Item not found"); return; }
+            if (isNameEquipped(itemName)) { showToast(`⚠️ ${itemName} already in hotbar!`); return; }
+            let emptyIdx = findEmptySlot();
+            if (emptyIdx === -1) { showToast("❌ All 5 slots full!"); return; }
+            let target = gameData.inventory[itemName][instanceIdx];
+            let brain = BRAINROTS.find(b => b.name === itemName);
+            if (!brain) { showToast("Invalid item"); return; }
+            let slotItem = { name: itemName, shiny: target.shiny, serial: target.serial, baseCoins: brain.rarity.baseCoins };
+            gameData.inventory[itemName].splice(instanceIdx, 1);
+            if (gameData.inventory[itemName].length === 0) delete gameData.inventory[itemName];
+            gameData.personalExist[itemName] = (gameData.personalExist[itemName] || 0) - 1;
+            gameData.equippedSlots[emptyIdx] = slotItem;
+            saveGame(); renderInventory(); renderHotbar();
+            showToast(`✨ ${itemName} equipped! +${Math.max(1, Math.floor(slotItem.baseCoins / 10))} 🧠/sec`);
+        }
+        function unequipItem(slotIdx) {
+            let slots = getEquippedSlots();
+            if (!slots[slotIdx]) return;
+            let item = slots[slotIdx];
+            let brain = BRAINROTS.find(b => b.name === item.name);
+            if (!brain) { slots[slotIdx] = null; saveGame(); renderHotbar(); showToast("Item no longer exists in game, removed from hotbar."); return; }
+            let newSerial = getGlobalSerial(item.name);
+            incrementGlobalExist(item.name);
+            if (!gameData.inventory[item.name]) gameData.inventory[item.name] = [];
+            gameData.inventory[item.name].push({ shiny: item.shiny, serial: newSerial });
+            gameData.personalExist[item.name] = (gameData.personalExist[item.name] || 0) + 1;
+            slots[slotIdx] = null;
+            saveGame(); renderInventory(); renderHotbar();
+            showToast(`🔽 ${item.name} unequipped.`);
+        }
+        function getIncomePerSec(baseCoins) { return Math.max(1, Math.floor(baseCoins / 10)); }
+        function startHotbarIncome() {
+            if (hotbarIncomeTimer) clearInterval(hotbarIncomeTimer);
+            hotbarIncomeTimer = setInterval(() => {
+                if (!currentUser || !gameData) return;
+                let total = 0;
+                for (let slot of getEquippedSlots()) if (slot) total += getIncomePerSec(slot.baseCoins);
+                if (total > 0) {
+                    gameData.brainCoins = Math.min(1e7, gameData.brainCoins + total);
+                    saveGame(); updateUI(); renderLeaderboard();
+                }
+            }, 1000);
+        }
+        function renderHotbar() {
+            let container = document.getElementById('hotbarSlotsContainer');
+            if (!container) return;
+            let slots = getEquippedSlots();
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                let slot = slots[i];
+                if (!slot) { html += `<div class="hotbar-slot empty-slot"><span>SLOT ${i + 1}</span><small>empty</small></div>`; continue; }
+                let brain = BRAINROTS.find(b => b.name === slot.name);
+                if (!brain) { 
+                    slots[i] = null; 
+                    saveGame(); 
+                    continue; 
+                }
+                let r = brain.rarity;
+                let iconHtml = brain.customImage ? `<img src="${brain.customImage}" style="width:54px;">` : `<i class="fas ${brain.icon}" style="color:${r.color}"></i>`;
+                let gen = getIncomePerSec(slot.baseCoins);
+                html += `<div class="brain-card" data-rarity="${r.name}" style="border-color:${r.color};"><div class="card-icon">${iconHtml}</div><div class="card-name">${escapeHtml(slot.name)}</div><div class="card-rarity" style="--grad:${r.gradient};">${r.name}</div><div class="serial-number">#${formatNumberComma(slot.serial)}</div><button class="unequip-btn" data-slot="${i}"><i class="fas fa-brain yellow-coin"></i> +${gen}/sec</button></div>`;
+            }
+            container.innerHTML = html;
+            document.querySelectorAll('.unequip-btn').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); let idx = parseInt(btn.getAttribute('data-slot')); unequipItem(idx); }; });
+        }
+
+        // ========== SUMMON (без изменений) ==========
+        async function summon() {
+            if (!canSummon) return;
+            let newItem = getRandomItem();
+            let name = newItem.name, rarityName = newItem.rarity.name;
+            let serial = getGlobalSerial(name);
+            incrementGlobalExist(name);
+            let autoRarities = getAutoDeleteRarities();
+            if (autoRarities.includes(rarityName)) {
+                updateLastCard(newItem, serial, true);
+                addCoins(newItem.rarity.baseCoins);
+                startCooldown(getCooldown());
+                return;
+            }
+            let isShiny = Math.random() < 0.01;
+            if (!gameData.inventory[name]) gameData.inventory[name] = [];
+            gameData.inventory[name].push({ shiny: isShiny, serial });
+            gameData.personalExist[name] = (gameData.personalExist[name] || 0) + 1;
+            if (isShiny) gameData.shinyCount++;
+            addCoins(newItem.rarity.baseCoins);
+            saveGame(); renderInventory();
+            updateLastCard(newItem, serial, false);
+            if (document.getElementById('indexPane').classList.contains('active')) renderCollection();
+            if (document.getElementById('globalPane').classList.contains('active')) renderLeaderboard();
+            updateUI();
+            startCooldown(getCooldown());
+        }
+        function updateLastCard(item, serial, autoDeleted) {
+            let container = document.getElementById('lastCardContainer');
+            if (!container) return;
+            let brain = item;
+            let r = brain.rarity;
+            let iconHtml = brain.customImage ? `<img src="${brain.customImage}" style="width:54px;">` : `<i class="fas ${brain.icon}" style="color:${r.color}"></i>`;
+            let income = getIncomePerSec(r.baseCoins);
+            let autoText = autoDeleted ? '<div style="margin-top: 20px; color:#ff8888; font-size:12px;">🗑️ AUTO-DELETED</div>' : `<div style="margin-top: 20px; color:#ffcc44; font-size:12px;"><i class="fas fa-brain yellow-coin"></i> +${income}/sec</div>`;
+            container.innerHTML = `<div class="brain-card" data-rarity="${r.name}" style="border-color:${r.color};"><div class="card-icon">${iconHtml}</div><div class="card-name">${escapeHtml(brain.name)}</div><div class="card-rarity" style="--grad:${r.gradient};">${r.name}</div><div class="serial-number">#${formatNumberComma(serial)}</div>${autoText}</div>`;
+            container.classList.remove('fly-animation'); void container.offsetWidth; container.classList.add('fly-animation');
+            setTimeout(() => container.classList.remove('fly-animation'), 500);
+        }
+        function startCooldown(sec) {
+            if (cdInterval) clearInterval(cdInterval);
+            canSummon = false;
+            let btn = document.getElementById('summonBtn'), ind = document.getElementById('cdIndicator');
+            let start = Date.now(), dur = sec * 1000;
+            cooldownEndTime = start + dur;
+            localStorage.setItem('brainrot_cooldown', cooldownEndTime);
+            let upd = () => {
+                let rem = Math.max(0, (cooldownEndTime - Date.now()) / 1000);
+                if (rem <= 0) { clearInterval(cdInterval); btn.disabled = false; ind.innerText = ''; canSummon = true; cooldownEndTime = 0; localStorage.removeItem('brainrot_cooldown'); }
+                else ind.innerText = `Cooldown: ${rem.toFixed(1)}s`;
+            };
+            upd(); cdInterval = setInterval(upd, 100);
+        }
+        function loadCooldown() {
+            let saved = localStorage.getItem('brainrot_cooldown');
+            if (saved && parseInt(saved) > Date.now()) {
+                cooldownEndTime = parseInt(saved);
+                let rem = (cooldownEndTime - Date.now()) / 1000;
+                if (rem > 0) startCooldownFromRemaining(rem);
+            }
+        }
+        function startCooldownFromRemaining(sec) { startCooldown(sec); }
+        function deleteItemInstance(itemName, idx) {
+            if (gameData.inventory[itemName] && gameData.inventory[itemName][idx]) {
+                gameData.inventory[itemName].splice(idx, 1);
+                if (gameData.inventory[itemName].length === 0) delete gameData.inventory[itemName];
+                saveGame(); renderInventory(); if (document.getElementById('indexPane').classList.contains('active')) renderCollection(); renderLeaderboard();
+            }
+        }
+        function renderInventory() {
+            let grid = document.getElementById('inventoryGrid');
+            let items = [];
+            for (let [name, instances] of Object.entries(gameData.inventory || {})) {
+                let brain = BRAINROTS.find(b => b.name === name);
+                if (!brain) continue;
+                let rank = brain.rarity.rank;
+                items.push({ name, instances, rank });
+            }
+            items.sort((a, b) => b.rank - a.rank);
+            if (items.length === 0) { grid.innerHTML = '<div class="empty-message"><i class="fas fa-box-open"></i> No brainrots yet.. press SUMMON</div>'; return; }
+            let html = '';
+            for (let { name, instances } of items) {
+                let brain = BRAINROTS.find(b => b.name === name);
+                if (!brain) continue;
+                let r = brain.rarity;
+                let globalCnt = globalExist[name] || 0;
+                let isEquipped = isNameEquipped(name);
+                let slotsFull = (findEmptySlot() === -1);
+                let disableEquip = isEquipped || slotsFull;
+                let income = getIncomePerSec(r.baseCoins);
+                for (let idx = 0; idx < instances.length; idx++) {
+                    let inst = instances[idx];
+                    let shinyClass = inst.shiny ? 'shiny' : '';
+                    let iconHtml = brain.customImage ? `<img src="${brain.customImage}" style="width:54px;">` : `<i class="fas ${brain.icon}" style="color:${r.color}"></i>`;
+                    html += `<div class="brain-card ${shinyClass}" data-rarity="${r.name}" style="border-color: ${r.color};"><div class="delete-btn" onclick="event.stopPropagation(); deleteItemInstance('${escapeHtml(name)}', ${idx})"><i class="fas fa-trash-alt"></i></div><div class="card-icon">${iconHtml}</div><div class="card-name">${escapeHtml(name)}</div><div class="card-rarity" style="--grad: ${r.gradient};">${r.name}</div><div class="serial-number">#${formatNumberComma(inst.serial)}</div><button class="equip-btn" ${disableEquip ? 'style="opacity:0.4; pointer-events:none;"' : ''} onclick="event.stopPropagation(); equipItem('${escapeHtml(name)}', ${idx})"><i class="fas fa-brain yellow-coin"></i> +${income}/sec</button></div>`;
+                }
+            }
+            grid.innerHTML = html;
+        }
+        function renderCollection() {
+            let container = document.getElementById('collectionRoot');
+            let groups = new Map();
+            for (let br of BRAINROTS) { let rn = br.rarity.name; if (!groups.has(rn)) groups.set(rn, []); groups.get(rn).push(br); }
+            let html = '';
+            let chances = getCurrentChances();
+            for (let rarity of chances) {
+                let items = groups.get(rarity.name) || [];
+                if (!items.length) continue;
+                let chanceDisplay = rarity.chance.toFixed(2) + '%';
+                html += `<div style="margin-bottom:48px;"><div style="font-size:26px; font-weight:800; margin-bottom:22px; display:flex; gap:12px; background:${rarity.gradient}; -webkit-background-clip:text; background-clip:text; color:transparent;"><i class="fas ${rarity.icon}"></i> ✦ ${rarity.name} ✦ (${chanceDisplay})</div><div class="cards-grid" style="justify-content:flex-start;">`;
+                for (let b of items) {
+                    let owned = gameData.inventory.hasOwnProperty(b.name);
+                    let lockedClass = owned ? '' : 'locked';
+                    let displayName = owned ? b.name : '???';
+                    let iconHtml = (owned && b.customImage) ? `<img src="${b.customImage}" style="width:54px;">` : `<i class="fas ${owned ? b.icon : 'fa-question-circle'}" style="color:${owned ? b.rarity.color : '#555'}"></i>`;
+                    let borderColor = owned ? b.rarity.color : '#555';
+                    let globalCnt = globalExist[b.name] || 0;
+                    html += `<div class="brain-card ${lockedClass}" style="border-color:${borderColor};" onclick="${owned ? `alert('🧠 ${escapeHtml(b.name)}\\nRarity: ${b.rarity.name}')` : `alert('❓ Not obtained yet!')`}"><div class="card-icon">${iconHtml}</div><div class="card-name">${escapeHtml(displayName)}</div><div class="card-rarity" style="--grad: ${b.rarity.gradient};">${b.rarity.name}</div></div>`;
+                }
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+        }
+        function renderUpgrades() {
+            let container = document.getElementById('upgradeGrid');
+            if (!container) return;
+            container.innerHTML = `
+            <div class="upgrade-card"><div class="upgrade-title"><i class="fas fa-hourglass-half"></i> Summon Cooldown</div><div class="upgrade-stats"><span>Level: ${gameData.cdLevel}/50</span><span>Current: ${getCooldown().toFixed(2)} sec</span><span>Next: ${(gameData.cdLevel < 50 ? getCooldown() - 4.9 / 50 : getCooldown()).toFixed(2)} sec</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${gameData.cdLevel / 50 * 100}%"></div></div><button class="upgrade-btn" id="upgradeCdBtn"><i class="fas fa-clock"></i> UPGRADE (${formatNumberShort(getCdCost())} 🧠)</button></div>
+            <div class="upgrade-card"><div class="upgrade-title"><i class="fas fa-chart-line"></i> Luck Multiplier</div><div class="upgrade-stats"><span>Level: ${gameData.luckLevel}/50</span><span>Current: x${getLuckMulti().toFixed(2)}</span><span>Next: x${(gameData.luckLevel < 50 ? 1 + (gameData.luckLevel + 1) * 9 / 50 : getLuckMulti()).toFixed(2)}</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${gameData.luckLevel / 50 * 100}%"></div></div><button class="upgrade-btn" id="upgradeLuckBtn"><i class="fas fa-dice"></i> UPGRADE (${formatNumberShort(getLuckCost())} 🧠)</button></div>
+            <div class="upgrade-card"><div class="upgrade-title"><i class="fas fa-coins"></i> Coin Gain</div><div class="upgrade-stats"><span>Level: ${gameData.gainLevel}/50</span><span>Current: x${getGainMulti().toFixed(2)}</span><span>Next: x${(gameData.gainLevel < 50 ? 1 + (gameData.gainLevel + 1) * 5 / 50 : getGainMulti()).toFixed(2)}</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${gameData.gainLevel / 50 * 100}%"></div></div><button class="upgrade-btn" id="upgradeGainBtn"><i class="fas fa-money-bill-wave"></i> UPGRADE (${formatNumberShort(getGainCost())} 🧠)</button></div>
+        `;
+            document.getElementById('upgradeCdBtn').onclick = () => { if (gameData.cdLevel < 50 && gameData.brainCoins >= getCdCost()) { gameData.brainCoins -= getCdCost(); gameData.cdLevel++; saveGame(); renderAll(); renderLeaderboard(); } };
+            document.getElementById('upgradeLuckBtn').onclick = () => { if (gameData.luckLevel < 50 && gameData.brainCoins >= getLuckCost()) { gameData.brainCoins -= getLuckCost(); gameData.luckLevel++; saveGame(); renderAll(); renderLeaderboard(); } };
+            document.getElementById('upgradeGainBtn').onclick = () => { if (gameData.gainLevel < 50 && gameData.brainCoins >= getGainCost()) { gameData.brainCoins -= getGainCost(); gameData.gainLevel++; saveGame(); renderAll(); renderLeaderboard(); } };
+        }
+        function renderChances() {
+            let container = document.getElementById('chancesList');
+            let chances = getCurrentChances();
+            let rows = '';
+            for (let r of chances) rows += `<div class="table-row"><span style="color:${r.color}">${r.name}</span><span>${r.chance.toFixed(3)}%</span></div>`;
+            container.innerHTML = rows;
+        }
+        function renderLeaderboard() {
+            let container = document.getElementById('leaderboardContainer');
+            if (!container) return;
+            let allUsers = Object.keys(accounts);
+            let scores = [];
+            for (let user of allUsers) {
+                let data = loadGameData(user); if (!data) continue;
+                let total = data.brainCoins || 0;
+                for (let [name, instances] of Object.entries(data.inventory || {})) { let b = BRAINROTS.find(b => b.name === name); if (b) total += b.rarity.value * instances.length; }
+                if (data.equippedSlots) for (let s of data.equippedSlots) if (s) { let b = BRAINROTS.find(b => b.name === s.name); if (b) total += b.rarity.value; }
+                let dn = data.displayName || user;
+                scores.push({ username: user, displayName: dn, value: total, avatar: data.avatar, verified: data.verified });
+            }
+            scores.sort((a, b) => b.value - a.value);
+            let top = scores.slice(0, 100);
+            if (top.length === 0) { container.innerHTML = '<div class="empty-message">No players yet</div>'; return; }
+            let html = '';
+            for (let i = 0; i < top.length; i++) {
+                let s = top[i];
+                let avatarStyle = s.avatar ? `src="${s.avatar}"` : `src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%238b5cf6'/%3E%3Ctext x='50' y='67' text-anchor='middle' fill='white' font-size='40' dy='.3em'%3E😺%3C/text%3E%3C/svg%3E"`;
+                html += `<div class="global-item"><div class="global-rank">#${i + 1}</div><img class="global-avatar" ${avatarStyle}><div class="global-info"><div class="global-displayname">${escapeHtml(s.displayName)}${s.verified ? ' <i class="fas fa-check-circle verified-icon"></i>' : ''}</div><div class="global-username">@${escapeHtml(s.username)}</div></div><div class="global-value">💰 ${formatNumberShort(s.value)}</div></div>`;
+            }
+            container.innerHTML = html;
+        }
+        function updateUI() {
+            document.getElementById('brainCoins').innerText = formatNumberShort(gameData.brainCoins);
+            let vSpan = document.getElementById('verifiedBadge');
+            if (gameData.verified) vSpan.style.display = 'inline-block';
+            else vSpan.style.display = 'none';
+        }
+        function renderAutoDeleteCheckboxes() {
+            let c = document.getElementById('rarityCheckboxes');
+            if (!c) return;
+            let selected = getAutoDeleteRarities();
+            let html = '';
+            for (let r of RARITIES) {
+                let checked = selected.includes(r.name) ? 'checked' : '';
+                html += `<label class="rarity-check"><input type="checkbox" value="${r.name}" ${checked}> <i class="fas ${r.icon}" style="color:${r.color}"></i> ${r.name}</label>`;
+            }
+            c.innerHTML = html;
+            c.querySelectorAll('input').forEach(chk => {
+                chk.addEventListener('change', () => {
+                    let newSelected = Array.from(c.querySelectorAll('input:checked')).map(inp => inp.value);
+                    setAutoDeleteRarities(newSelected);
+                });
+            });
+        }
+        function generateMerchantItems() {
+            let shuffled = [...BRAINROTS];
+            for (let i = shuffled.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+            let selected = shuffled.slice(0, 3);
+            merchantItems = selected.map(item => ({ name: item.name, price: Math.floor(item.rarity.baseCoins * 30 + Math.random() * 200), icon: item.icon, rarity: item.rarity }));
+            merchantResetTime = Date.now() + 20 * 60 * 1000;
+            localStorage.setItem('brainrot_merchant', JSON.stringify({ items: merchantItems, resetTime: merchantResetTime }));
+            renderShop();
+        }
+        function loadMerchant() {
+            let stored = localStorage.getItem('brainrot_merchant');
+            if (stored) { let data = JSON.parse(stored); if (data.resetTime > Date.now()) { merchantItems = data.items; merchantResetTime = data.resetTime; } else generateMerchantItems(); }
+            else generateMerchantItems();
+            renderShop();
+            setInterval(() => { if (merchantResetTime && Date.now() >= merchantResetTime) generateMerchantItems(); updateMerchantTimer(); }, 1000);
+        }
+        function updateMerchantTimer() {
+            let td = document.getElementById('shopTimer');
+            if (td && merchantResetTime) {
+                let rem = Math.max(0, merchantResetTime - Date.now());
+                let mins = Math.floor(rem / 60000), secs = Math.floor((rem % 60000) / 1000);
+                td.innerHTML = `<i class="fas fa-clock"></i> New offers in ${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+        function renderShop() {
+            let c = document.getElementById('shopGrid');
+            if (!c) return;
+            if (!merchantItems.length) { c.innerHTML = '<div class="empty-message">Loading...</div>'; return; }
+            let html = '';
+            for (let item of merchantItems) {
+                let brain = BRAINROTS.find(b => b.name === item.name);
+                if (!brain) continue; // пропустить, если предмет удалён из игры
+                html += `<div class="shop-card"><div class="shop-title"><i class="fas ${item.icon}"></i> ${escapeHtml(item.name)}</div><div class="shop-stats"><span>Rarity: <span style="background:${item.rarity.gradient}; -webkit-background-clip:text; background-clip:text; color:transparent;">${item.rarity.name}</span></span><span><i class="fas fa-brain yellow-coin"></i> ${formatNumberShort(item.price)}</span></div><button class="shop-btn" data-name="${escapeHtml(item.name)}" data-price="${item.price}"><i class="fas fa-shopping-cart"></i> PURCHASE</button></div>`;
+            }
+            c.innerHTML = html;
+            document.querySelectorAll('.shop-btn').forEach(btn => {
+                btn.onclick = () => {
+                    let name = btn.getAttribute('data-name'), price = parseInt(btn.getAttribute('data-price'));
+                    if (gameData.brainCoins >= price) {
+                        let brain = BRAINROTS.find(b => b.name === name);
+                        if (!brain) { showToast("This item no longer exists in the game!"); generateMerchantItems(); renderAll(); return; }
+                        gameData.brainCoins -= price;
+                        let serial = getGlobalSerial(name);
+                        incrementGlobalExist(name);
+                        if (!gameData.inventory[name]) gameData.inventory[name] = [];
+                        gameData.inventory[name].push({ shiny: false, serial });
+                        gameData.personalExist[name] = (gameData.personalExist[name] || 0) + 1;
+                        saveGame(); renderInventory(); if (document.getElementById('indexPane').classList.contains('active')) renderCollection(); renderLeaderboard(); updateUI();
+                        showToast(`Purchased ${name} for ${formatNumberShort(price)} 🧠`);
+                    } else showToast(`Not enough coins!`);
+                };
+            });
+        }
+
+        // ========== МАРКЕТ ==========
+        function saveMarketOffers() { localStorage.setItem('brainrot_marketOffers', JSON.stringify(marketOffers)); }
+        function renderMarketMyOffers() {
+            let container = document.getElementById('myOffersGrid');
+            if (!container) return;
+            let myOffers = marketOffers.filter(o => o.sellerUsername === currentUser);
+            let html = '';
+            if (myOffers.length < 25) {
+                html += `<div class="brain-card add-offer-card" id="addOfferMainBtn"><i class="fas fa-plus-circle"></i><span>Add new offer</span><small style="color:#aaa;">${myOffers.length}/25 active</small></div>`;
+            }
+            for (let offer of myOffers) {
+                let brain = BRAINROTS.find(b => b.name === offer.itemName);
+                if (!brain) continue;
+                let r = brain.rarity;
+                let iconHtml = brain.customImage ? `<img src="${brain.customImage}" style="width:54px;">` : `<i class="fas ${brain.icon}" style="color:${r.color}"></i>`;
+                let serialDisplay = (offer.serial !== undefined && offer.serial !== null) ? formatNumberComma(offer.serial) : '?';
+                html += `<div class="brain-card" data-rarity="${r.name}" style="border-color:${r.color};">
+                            <div class="card-icon">${iconHtml}</div>
+                            <div class="card-name">${escapeHtml(offer.itemName)}</div>
+                            <div class="card-rarity" style="--grad:${r.gradient};">${r.name}</div>
+                            <div class="serial-number">#${serialDisplay}</div>
+                            <button class="buy-btn" disabled style="cursor:default; opacity:0.7;"><i class="fas fa-brain yellow-coin"></i> ${formatNumberShort(offer.price)}</button>
+                            <button class="delete-btn" data-offer-id="${offer.offerId}" style="opacity:1; background:#ff4444; top:10px; right:10px;"><i class="fas fa-trash-alt"></i></button>
+                        </div>`;
+            }
+            if (myOffers.length === 0 && html === '') html = '<div class="empty-message">No offers yet. Click + to list an item.</div>';
+            container.innerHTML = html;
+            document.querySelectorAll('#myOffersGrid .delete-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    let offerId = parseInt(btn.getAttribute('data-offer-id'));
+                    let offer = marketOffers.find(o => o.offerId === offerId);
+                    if (offer && offer.sellerUsername === currentUser) {
+                        let brain = BRAINROTS.find(b => b.name === offer.itemName);
+                        if (brain) {
+                            let newSerial = getGlobalSerial(offer.itemName);
+                            incrementGlobalExist(offer.itemName);
+                            if (!gameData.inventory[offer.itemName]) gameData.inventory[offer.itemName] = [];
+                            gameData.inventory[offer.itemName].push({ shiny: false, serial: newSerial });
+                            gameData.personalExist[offer.itemName] = (gameData.personalExist[offer.itemName] || 0) + 1;
+                            saveGame();
+                            renderInventory();
+                        }
+                        marketOffers = marketOffers.filter(o => o.offerId !== offerId);
+                        saveMarketOffers();
+                        renderMarketMyOffers();
+                        renderMarketOthersOffers();
+                        showToast(`Offer removed, ${offer.itemName} returned to inventory.`);
+                    }
+                };
+            });
+            let addBtn = document.getElementById('addOfferMainBtn');
+            if (addBtn) addBtn.onclick = () => openSellModal();
+        }
+        function renderMarketOthersOffers() {
+            let container = document.getElementById('othersOffersGrid');
+            if (!container) return;
+            let searchTerm = document.getElementById('marketSearch')?.value.toLowerCase() || '';
+            let othersOffers = marketOffers.filter(o => o.sellerUsername !== currentUser && o.itemName.toLowerCase().includes(searchTerm));
+            if (othersOffers.length === 0) { container.innerHTML = '<div class="empty-message">No offers from other players</div>'; return; }
+            let html = '';
+            for (let offer of othersOffers) {
+                let brain = BRAINROTS.find(b => b.name === offer.itemName);
+                if (!brain) continue;
+                let r = brain.rarity;
+                let iconHtml = brain.customImage ? `<img src="${brain.customImage}" style="width:54px;">` : `<i class="fas ${brain.icon}" style="color:${r.color}"></i>`;
+                let serialDisplay = (offer.serial !== undefined && offer.serial !== null) ? formatNumberComma(offer.serial) : '?';
+                html += `<div class="brain-card" data-rarity="${r.name}" style="border-color:${r.color};">
+                        <div class="card-icon">${iconHtml}</div>
+                        <div class="card-name">${escapeHtml(offer.itemName)}</div>
+                        <div class="card-rarity" style="--grad:${r.gradient};">${r.name}</div>
+                        <div class="serial-number">#${serialDisplay}</div>
+                        <div class="seller-info">Seller: @${escapeHtml(offer.sellerUsername)}</div>
+                        <button class="buy-btn" data-offer-id="${offer.offerId}"><i class="fas fa-brain yellow-coin"></i> ${formatNumberShort(offer.price)}</button>
+                    </div>`;
+            }
+            container.innerHTML = html;
+            document.querySelectorAll('#othersOffersGrid .buy-btn').forEach(btn => {
+                btn.onclick = async (e) => {
+                    e.stopPropagation();
+                    let offerId = parseInt(btn.getAttribute('data-offer-id'));
+                    let offer = marketOffers.find(o => o.offerId === offerId);
+                    if (!offer) { showToast("Offer expired"); renderMarketOthersOffers(); return; }
+                    if (gameData.brainCoins < offer.price) { showToast(`Need ${formatNumberShort(offer.price)} 🧠`); return; }
+                    gameData.brainCoins -= offer.price;
+                    let commission = Math.floor(offer.price * 0.2);
+                    let sellerEarn = offer.price - commission;
+                    let sellerData = await loadGameData(offer.sellerUsername);
+                    if (sellerData) {
+                        sellerData.brainCoins += sellerEarn;
+                        let hash = simpleHash(sellerData);
+                        localStorage.setItem(`brainrot_data_${offer.sellerUsername}`, JSON.stringify({ data: sellerData, hash }));
+                    }
+                    let newSerial = getGlobalSerial(offer.itemName);
+                    incrementGlobalExist(offer.itemName);
+                    if (!gameData.inventory[offer.itemName]) gameData.inventory[offer.itemName] = [];
+                    gameData.inventory[offer.itemName].push({ shiny: false, serial: newSerial });
+                    gameData.personalExist[offer.itemName] = (gameData.personalExist[offer.itemName] || 0) + 1;
+                    saveGame();
+                    marketOffers = marketOffers.filter(o => o.offerId !== offerId);
+                    saveMarketOffers();
+                    renderMarketMyOffers();
+                    renderMarketOthersOffers();
+                    renderInventory();
+                    renderLeaderboard();
+                    updateUI();
+                    showToast(`Purchased ${offer.itemName} for ${formatNumberShort(offer.price)} 🧠!`);
+                };
+            });
+        }
+        function openSellModal() {
+            if (marketOffers.filter(o => o.sellerUsername === currentUser).length >= 25) {
+                showToast("Maximum 25 active offers per account!");
+                return;
+            }
+            let sel = document.getElementById('offerItemSelect');
+            sel.innerHTML = '<option value="">-- Select item --</option>';
+            for (let [name, instances] of Object.entries(gameData.inventory)) {
+                if (instances.length) {
+                    let lastSerial = instances[instances.length - 1]?.serial;
+                    sel.innerHTML += `<option value="${escapeHtml(name)}" data-serial="${lastSerial || ''}">${escapeHtml(name)} (serial #${lastSerial ? formatNumberComma(lastSerial) : '?'})</option>`;
+                }
+            }
+            document.getElementById('offerPrice').value = '';
+            document.getElementById('sellModal').style.display = 'flex';
+        }
+        function confirmOffer() {
+            let itemName = document.getElementById('offerItemSelect').value;
+            let price = parseInt(document.getElementById('offerPrice').value);
+            if (!itemName || !price || price < 1 || price > 100000000000) { showToast("Invalid price (1 - 100,000,000,000)"); return; }
+            let instances = gameData.inventory[itemName];
+            if (!instances || instances.length === 0) { showToast("You don't own that item"); return; }
+            let removed = instances.pop();
+            if (instances.length === 0) delete gameData.inventory[itemName];
+            saveGame();
+            let offerId = Date.now() + Math.floor(Math.random() * 10000);
+            marketOffers.push({ offerId, itemName, sellerUsername: currentUser, price, timestamp: Date.now(), serial: removed.serial });
+            saveMarketOffers();
+            renderMarketMyOffers();
+            renderMarketOthersOffers();
+            renderInventory();
+            updateUI();
+            document.getElementById('sellModal').style.display = 'none';
+            showToast(`Item listed for ${formatNumberShort(price)} 🧠.`);
+        }
+        function switchMarketTabs(tab) {
+            let myPanel = document.getElementById('myOffersPanel');
+            let othersPanel = document.getElementById('othersOffersPanel');
+            let btns = document.querySelectorAll('.market-subtab');
+            btns.forEach(btn => btn.classList.remove('active'));
+            if (tab === 'my') {
+                btns[0].classList.add('active');
+                myPanel.style.display = 'block';
+                othersPanel.style.display = 'none';
+                renderMarketMyOffers();
+            } else {
+                btns[1].classList.add('active');
+                myPanel.style.display = 'none';
+                othersPanel.style.display = 'block';
+                renderMarketOthersOffers();
+            }
+        }
+
+        function renderAll() { renderInventory(); renderHotbar(); renderCollection(); renderUpgrades(); renderChances(); renderLeaderboard(); renderMarketMyOffers(); renderMarketOthersOffers(); updateUI(); renderAutoDeleteCheckboxes(); }
+        function attachGameEvents() {
+            document.getElementById('summonBtn').onclick = summon;
+            document.getElementById('settingsBtn').onclick = () => { document.getElementById('modalUsername').innerText = currentUser; document.getElementById('modalPassword').innerText = accounts[currentUser]?.password || ''; document.getElementById('displayNameInput').value = gameData.displayName || currentUser; document.getElementById('settingsModal').style.display = 'flex'; };
+            document.getElementById('saveSettingsBtn').onclick = () => { let newName = document.getElementById('displayNameInput').value.trim(); if (newName) gameData.displayName = newName; saveGame(); document.getElementById('currentUsername').innerText = gameData.displayName; renderLeaderboard(); document.getElementById('settingsModal').style.display = 'none'; showToast("Settings saved"); };
+            document.getElementById('logoutBtn').onclick = () => { localStorage.removeItem('brainrot_last_user'); location.reload(); };
+            document.getElementById('closeModalBtn').onclick = () => document.getElementById('settingsModal').style.display = 'none';
+            document.getElementById('confirmOfferBtn').onclick = confirmOffer;
+            document.getElementById('cancelOfferBtn').onclick = () => document.getElementById('sellModal').style.display = 'none';
+            document.getElementById('marketSearch').oninput = () => renderMarketOthersOffers();
+            document.getElementById('avatarClickArea').onclick = () => {
+                let inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+                inp.onchange = (e) => { let file = e.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (ev) => { gameData.avatar = ev.target.result; document.getElementById('avatarImg').src = gameData.avatar; saveGame(); renderLeaderboard(); showToast("Avatar updated"); }; reader.readAsDataURL(file); } };
+                inp.click();
+            };
+            document.querySelectorAll('.market-subtab').forEach(btn => {
+                btn.onclick = () => switchMarketTabs(btn.getAttribute('data-market-tab'));
+            });
+            const tabs = document.querySelectorAll('#tabBar .tab-btn');
+            const panes = ['summonPane', 'inventoryPane', 'hotbarPane', 'indexPane', 'upgradePane', 'shopPane', 'marketPane', 'globalPane', 'chancesPane'];
+            tabs.forEach(btn => {
+                btn.onclick = () => {
+                    let tab = btn.getAttribute('data-tab');
+                    tabs.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    panes.forEach(p => document.getElementById(p).classList.remove('active'));
+                    document.getElementById(tab + 'Pane').classList.add('active');
+                    if (tab === 'inventory') renderInventory();
+                    if (tab === 'hotbar') renderHotbar();
+                    if (tab === 'index') renderCollection();
+                    if (tab === 'shop') renderShop();
+                    if (tab === 'market') { renderMarketMyOffers(); renderMarketOthersOffers(); }
+                    if (tab === 'global') renderLeaderboard();
+                    if (tab === 'chances') renderChances();
+                };
+            });
+        }
+        async function loginUser(username, password) {
+            if (!accounts[username] || accounts[username].password !== password) return false;
+            currentUser = username;
+            localStorage.setItem('brainrot_last_user', currentUser);
+            let loaded = await loadGameData(currentUser);
+            if (!loaded) gameData = await createNewUserData(); else gameData = loaded;
+            if (!gameData.autoDeleteRarities) gameData.autoDeleteRarities = [];
+            if (!gameData.equippedSlots) gameData.equippedSlots = [null, null, null, null, null];
+            
+            // Чистка данных от невалидных предметов
+            cleanInvalidData(gameData);
+            cleanGlobalMarketOffers();
+            cleanGlobalExist();
+            
+            saveGame();
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            document.getElementById('currentUsername').innerText = gameData.displayName || currentUser;
+            if (gameData.avatar) document.getElementById('avatarImg').src = gameData.avatar;
+            loadCooldown();
+            loadMerchant();
+            startHotbarIncome();
+            attachGameEvents();
+            renderAll();
+            return true;
+        }
+        function isValidUsername(n) { return /^[a-zA-Z0-9_]{3,20}$/.test(n); }
+        function isValidPassword(p) { return /^[a-zA-Z0-9&%!@#$]{4,}$/.test(p); }
+        document.getElementById('loginBtn').onclick = async () => { let user = document.getElementById('loginUsername').value.trim(); let pwd = document.getElementById('loginPassword').value; if (await loginUser(user, pwd)) return; showToast('Invalid credentials'); };
+        document.getElementById('registerBtn').onclick = () => { let u = document.getElementById('regUsername').value.trim(), p = document.getElementById('regPassword').value, c = document.getElementById('regConfirm').value; if (!isValidUsername(u)) { showToast('Username 3-20 letters/digits/_'); return; } if (p !== c) { showToast('Passwords mismatch'); return; } if (accounts[u]) { showToast('User exists'); return; } accounts[u] = { password: p, verified: false }; localStorage.setItem('brainrot_accounts', JSON.stringify(accounts)); showToast('Registered! Login now.'); document.getElementById('showLogin').click(); };
+        document.getElementById('showRegister').onclick = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; };
+        document.getElementById('showLogin').onclick = () => { document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; };
+        (async () => { let last = localStorage.getItem('brainrot_last_user'); if (last && accounts[last]) await loginUser(last, accounts[last].password); })();
+        function escapeHtml(s) { return String(s).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+        window.equipItem = equipItem;
+        window.deleteItemInstance = deleteItemInstance;
+    </script>
+</body>
+</html>
